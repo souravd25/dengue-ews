@@ -22,6 +22,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     g = df.groupby("ward_id", sort=False)
     for k in RAIN_LAGS:
         df[f"rain_lag_{k}w"] = g["rainfall_mm"].shift(k)
+    for k in (2, 4):
+        df[f"temp_lag_{k}w"] = g["avg_temp_c"].shift(k)
+        df[f"humidity_lag_{k}w"] = g["relative_humidity_pct"].shift(k)
     # rolling sums (include current week) -> accumulated water in drains/containers
     df["rain_sum_4w"] = g["rainfall_mm"].transform(lambda s: s.rolling(4, min_periods=4).sum())
     df["rain_sum_8w"] = g["rainfall_mm"].transform(lambda s: s.rolling(8, min_periods=8).sum())
@@ -39,6 +42,7 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 FEATURES = (
     STATIC + WEATHER
     + [f"rain_lag_{k}w" for k in RAIN_LAGS]
+    + ["temp_lag_2w", "temp_lag_4w", "humidity_lag_2w", "humidity_lag_4w"]
     + ["rain_sum_4w", "rain_sum_8w", "temp_mean_4w", "humidity_mean_4w", "waterlog_x_rain4w",
        "season_sin", "season_cos"]
 )
@@ -55,9 +59,9 @@ def driver_group(name: str) -> str:
     """Human-friendly group for the dashboard driver chart."""
     if name.startswith("rain_lag") or name in ("rain_sum_4w", "rain_sum_8w", "rainfall_mm"):
         return "Rainfall (multi-week lags)"
-    if name in ("avg_temp_c", "temp_mean_4w"):
+    if name in ("avg_temp_c", "temp_mean_4w") or name.startswith("temp_lag"):
         return "Temperature"
-    if name in ("relative_humidity_pct", "humidity_mean_4w"):
+    if name in ("relative_humidity_pct", "humidity_mean_4w") or name.startswith("humidity_lag"):
         return "Humidity"
     if name in ("water_logging_risk_index", "waterlog_x_rain4w"):
         return "Ward drainage / water-logging"

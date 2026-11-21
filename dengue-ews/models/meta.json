@@ -1,0 +1,39 @@
+{
+  "features": [
+    "population_density_sqkm",
+    "water_logging_risk_index",
+    "sanitation_score",
+    "avg_temp_c",
+    "rainfall_mm",
+    "relative_humidity_pct",
+    "rain_lag_1w",
+    "rain_lag_2w",
+    "rain_lag_3w",
+    "rain_lag_4w",
+    "rain_lag_5w",
+    "rain_lag_6w",
+    "rain_lag_7w",
+    "rain_lag_8w",
+    "rain_sum_4w",
+    "rain_sum_8w",
+    "temp_mean_4w",
+    "humidity_mean_4w",
+    "waterlog_x_rain4w",
+    "season_sin",
+    "season_cos"
+  ],
+  "horizons": [
+    2,
+    3,
+    4
+  ],
+  "split": {
+    "train_end": "2022-12-31",
+    "val_end": "2023-12-31"
+  },
+  "tier_thresholds": {
+    "medium": 1.0,
+    "high": 7.0,
+    "critical": 13.0
+  }
+}
